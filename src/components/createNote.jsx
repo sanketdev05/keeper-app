@@ -1,56 +1,69 @@
-import React, {useState} from 'react';
+import React, { useState } from "react";
+import Fab from "@mui/material/Fab";
+import AddIcon from "@mui/icons-material/Add";
+import Zoom from "@mui/material/Zoom";
 
 function CreateNote(props) {
-    const [newNote, setNewNote] = useState([
-        {
-            title:"",
-            content:""
-        }
-    ]);
+  const [isexpanded, setIsexpanded] = useState(false);
 
-    function handleChange(event) {
-        const {name, value} = event.target;
+  const [newNote, setNewNote] = useState({
+    title: "",
+    content: "",
+  });
 
-        setNewNote((prevValues) =>{
-        return {
-            ...prevValues,
-            [name]:value
-        }}
-        );
-    }
+  function handleChange(event) {
+    const { name, value } = event.target;
 
-    function createNote(event) {
-        props.onAdd(newNote)
-        setNewNote(
-            {
-                title:"",
-                content:""
-            }
-        )
-        event.preventDefault();
-    }
+    setNewNote((prevValues) => {
+      return {
+        ...prevValues,
+        [name]: value,
+      };
+    });
+  }
 
-    return (
-        <div>
-            <form >
-                <input
-                    onChange={handleChange}
-                    type="text"
-                    name="title"
-                    placeholder="Title"
-                    value={newNote.title}
-                />
-                <textarea
-                    onChange={handleChange}
-                    name="content"
-                    rows="3"
-                    placeholder="Take a note... "
-                    value={newNote.content}>
-                </textarea>
-                <button onClick= { createNote }> Add </button>
-            </form>
-        </div>
-    );
+  function createNote(event) {
+    props.onAdd(newNote);
+    setNewNote({
+      title: "",
+      content: "",
+    });
+    event.preventDefault();
+  }
+
+  function handleClick() {
+    setIsexpanded(true);
+  }
+
+  return (
+    <div>
+      <form className="create-note">
+        {isexpanded && (
+          <input
+            name="title"
+            onChange={handleChange}
+            value={newNote.title}
+            placeholder="Title"
+          />
+        )}
+
+        <textarea
+          name="content"
+          onClick={handleClick}
+          onChange={handleChange}
+          value={newNote.content}
+          placeholder="Take a note..."
+          rows={isexpanded ? 3 : 1}
+        />
+
+        <Zoom in={isexpanded}>
+          <Fab onClick={createNote}>
+            <AddIcon />
+          </Fab>
+        </Zoom>
+      </form>
+    </div>
+  );
 }
 
 export default CreateNote;
